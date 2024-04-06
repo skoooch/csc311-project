@@ -1,4 +1,6 @@
-
+"""
+This file has a modified version of the AutoEncoder where meta data has been jointly trained and injected into the latent layer.
+"""
 from sympy import true
 from utils import *
 import numpy as np

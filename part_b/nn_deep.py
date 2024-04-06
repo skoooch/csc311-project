@@ -1,4 +1,6 @@
-
+"""
+This file has a modified version of the AutoEncoder where an extra layer has been added.
+"""
 from sympy import true
 from utils import *
 import numpy as np

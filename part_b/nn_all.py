@@ -1,4 +1,6 @@
-
+"""
+This file has a modified version of the AutoEncoder where all modifications are used (question as entity, deeper network, dense refeeding, dropout, meta data injection).
+"""
 from sympy import true
 from utils import *
 import numpy as np

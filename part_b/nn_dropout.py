@@ -1,4 +1,6 @@
-
+"""
+This file has a modified version of the AutoEncoder where a dropout function is applied to the latent layer.
+"""
 from sympy import true
 from utils import *
 import numpy as np

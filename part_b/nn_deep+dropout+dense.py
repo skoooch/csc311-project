@@ -1,4 +1,7 @@
-
+"""
+This file has a modified version of the AutoEncoder where an extra layer has been added as well as dropout of the latent neurons,
+as well as dense refeeding during training.
+"""
 from sympy import true
 from utils import *
 import numpy as np
