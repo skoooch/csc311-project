@@ -25,9 +25,27 @@
 \subsubsection{(d)}
 \subsection{(ii)}
 \subsubsection{(a)}
+Ok!
 \subsubsection{(b)}
+Final tuned hyperparameter values:\\
+$k = 10$\\
+$lr = 0.1$\\
+$num\_epoch = 13$
 \subsubsection{(c)}
+Training objective as a function of epoch:\\
+\includegraphics[scale=0.6]{figures/Aq3_train_objective_plot.png}\\
+Validation objective as a function of epoch:\\
+\includegraphics[scale=0.6]{figures/Aq3_valid_objective_plot.png}\\
+\\
+Test Accuracy: 0.6802145074795372
 \subsubsection{(d)}
+Final tuned lambda value:\\
+$lamb = 0.001$\\
+\\
+Validation accuracy for final model: 0.6841659610499576\\
+Test accuracy for final model: 0.6852949477843635\\
+\\
+Using a regularization penalty with our chosen $\lambda$, our model performs slightly better as the test accuracy increases by approximately 0.005.
 \section{Part B}
 \subsection{Formal Description of Algorithm}
 Our team chose to modify the autoencoder used in Part A, question 3. We made several additions to the original, all which either centered around optimization improvements or attempts at reducing overfitting. We shall describe each modification in depth separately, and then the complete model visually.
