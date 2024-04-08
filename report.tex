@@ -114,11 +114,11 @@ The final autoencoder we came up with incorporates all the modifications listed 
 \hline
 Model & Val. Accuracy & Test Accuracy & Hyperparameters \\
 \hline
-Part A Autoencoder & 0.6841 & 0.6852 & \\
+Part A Autoencoder & 0.6841 & 0.6852 & k=10, Epoch = 13, LR = 0.1 $\lambda$ = 0.001 \\
 \hline
 Metadata & 0.6793 & 0.6815 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
 \hline
-Beta Injection & 0.6946 & 0.6943 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
+Theta Injection & 0.6946 & 0.6943 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
 \hline
 Question as Entity & 0.69545 & 0.69432 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
 \hline
@@ -142,7 +142,14 @@ Question + Deeper + Dropout + Refeeding + Metadata + Beta Injection & 0.7077 & 0
 \end{table}
 Note, each row of this table represents the performance of the modifications stated in the "Model" column. Each modification is has been added onto the baseline model from Part A, Q3.\\
 \subsection{Model Performance}
-Because our model is made up of many small modifications, the final performance can be broken down into smaller parts. We can modifications like 
+Because our model is made up of many small modifications, the analyisis of performance can be broken down into smaller parts. Addition of just \underline{metadata} was not beneficial as it likely just enhanced the model's overfitting tendencies. Additionally, the metadata available for user as entities is quite minimal, with gender and age likely being mostly irrelevant to quiz performance. \underline{Theta injection} on its own did however make an improvement form the baseline. This is likely because we had no additional network being trained on the metadata itself, and it is only a single value. The model saw a major improvement when switching to a \underline{qsuestion as entity} formulation, largely due to optimization enhancements.
+\\
+Bringing metadata and beta injection in to play with question as entity also brought about performance improvements. The beta injection improvement was about the same as the theta injection's improvement on the baseline model. As well, the question meta data was far more nuanced and thus allowed for more complex patterns to be learned, thus enhancing optimization capabilities. The next modification to make was \underline{adding more layers} to our neural net. By itself, this change actually hindered the models accuracy by a few hundredths of a percent, largely due to over fitting, although more layers allows for a model to learn more complex functions, without sufficient regularization techniques, the model will align itself almost completely to the training data.
+\\
+Until this point, all our models had suffered from overfitting, which can be seen by the fact that their peak performance occured at very early epochs (they quickly drop off in accuracy due to overfitting). However, after adding \underline{dropout} to our deeper, question as entity model, we saw a major improvement in performance. This was due to the regularizing effects of dropout, and its ability to dismantle co-dependence within the network. 
+\\From this point, our model's performance only increased slightly when adding dense re-feeding/meta injection and even decreased when all modifications were combined. We believe this came from complications with overfitting, due to have both the beta value and metadata injected, thus increase the size of our latent dimension significantly. I believe for these additional modifications to make a significant positive change to the performance, they would need to be added alongside other regularization techniques.
+
+
 \subsection{Model Limitation}
 N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, R. Salakhutdinov, “Dropout: A Simple Way to Prevent Neural Networks from Overfitting” (2014)
 
