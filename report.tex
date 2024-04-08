@@ -15,20 +15,27 @@ $\bold{Contributions:}$\\
 Part A questions 1 and 2 were worked on by Kevin. Part A question 3 was worked on by Marc. Everyone helped come up with model modifications for part B, however Ewan and Caroline took on most of the work with the modifications and question responses.
 
 \section{Part A}
-\subsection{}
+\subsection{Collaborative filtering with k-Nearest Neighbor}
 %Q1
 \subsubsection{(a)}
 Test Accuracy: 0.6841659610499576\\
 k: 11\\
-\includegraphics[width=0.7\textwidth]{q1a.png}\\
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/q1a.png}\\
+\end{figure}
 \subsubsection{(b)}
 The underlying assumption is that if other students consistently assign the same scores to both Question A and Question B, then both questions are considered equally correct or incorrect for those particular students.\\
 \\
 \subsubsection{(c)}
 Test Accuracy: 0.545582839401637\\
 k: 6\\
-\includegraphics[width=0.7\textwidth]{q1c.png}\\
-\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/q1c.png}\\
+\end{figure}
+
 \subsubsection{(d)}
 Item Based Filtering seems better for our use case.\\
 \\
@@ -42,7 +49,8 @@ The effectiveness of KNN diminishes notably when dealing with sparse data. This 
 KNN can be slow due to the need to compute distances between each and every data point, especially in this scenario, since we expect to have sparse matrices and a large number of missing values. Since we want to scale our application to get data from more students and increase the number of questions students can do, the large data set will increase computational cost. \\
 \\
 \newpage
-\subsection{}
+
+\subsection{The Item Response Theory Model}
 \subsubsection{(a)}
 We have,
 $$
@@ -90,25 +98,36 @@ $$
 \subsubsection{(b)}
 Code is included in zip.
 
-\newpage
 \subsubsection{(c)}
 Learning rate: 0.0001\\
 Iterations: 1500\\
 Validation accuracy: 0.7075924357888794\\
 Test accuracy: 0.7025119954840531\\
-\includegraphics[width=0.9\textwidth]{Figure_1.png}\\
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/q2loglikelihood.png}
+\end{figure}
 \subsubsection{(d)}
-\includegraphics[width=0.9\textwidth]{Figure_2.png}\\
-\includegraphics[width=0.9\textwidth]{Figure_3.png}\\
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/q2probability.png}\\
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/q2probability2.png}\\
+\end{figure}
 Questions used:\\
 j1: 1525\\
 j2: 1574\\
 j3: 1030\\
-Theta represents the ability of the student. It should be noted that as the ability of a student increases, they become more capable of solving a given question. This relationship is depicted in the graph. The curve illustrates that as Theta increases, the probability of a student solving question j1, j2, or j3 also increases. It is worth noting the separation between the curves: the orange curve has a higher probability of being solved than the green and blue curves. Therefore, we can infer that orange questions are easier than green questions, and green questions are easier than blue questions.
+
+\noindent Theta represents the ability of the student. It should be noted that as the ability of a student increases, they become more capable of solving a given question. This relationship is depicted in the graph. The curve illustrates that as Theta increases, the probability of a student solving question j1, j2, or j3 also increases. It is worth noting the separation between the curves: the orange curve has a higher probability of being solved than the green and blue curves. Therefore, we can infer that orange questions are easier than green questions, and green questions are easier than blue questions.\\
 
 
+\newpage
 
-\subsection{(ii)}
+\subsection{Neural Networks}
 \subsubsection{(a)}
 Ok!
 \subsubsection{(b)}
@@ -118,10 +137,17 @@ $lr = 0.1$\\
 $num\_epoch = 13$
 \subsubsection{(c)}
 Training objective as a function of epoch:\\
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.6]{figures/Aq3_train_objective_plot.png}\\
 Validation objective as a function of epoch:\\
+\end{figure}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.6]{figures/Aq3_valid_objective_plot.png}\\
-\\
+\end{figure}
+
+
 Test Accuracy: 0.6802145074795372
 \subsubsection{(d)}
 Final tuned lambda value:\\
@@ -134,34 +160,35 @@ Using a regularization penalty with our chosen $\lambda$, our model performs sli
 \section{Part B}
 \subsection{Formal Description of Algorithm}
 Our team chose to modify the autoencoder used in Part A, question 3. We made several additions to the original, all which either centered around optimization improvements or attempts at reducing overfitting. We shall describe each modification in depth separately, and then the complete model visually.
+
 \subsubsection{Training based on Questions}
 The original model used as input the 584 student entities, each a tensor of length 1774 (each feature representing the students correctness on a question). For our modified model, we decided to reverse this and have our autoencoder take in the 1774 questions as input, each being a tensor of length 584 (each feature representing the correctness of a student's answer on this question). With this modification, the model's definition became,
 Given a question $q \in \mathbb{R}^{N}$, $f$ is a reconstruction of the input $q$, where 
 
 $$f(q, \theta) = h(W^{(2)}g(W^{(1)}q + b^{(1)}) + b^{(2)}) \in \mathbb{R}^{N_{\text{input}}}$$
 
-Here, $W^{(2)} \in \mathbb{R}^{N_{\text{users}}\times k}$ and $W^{(1)} \in \mathbb{R}^{k\times N_{\text{users}}}$. $g$ and $h$ are still sigmoid functions. 
+\noindent Here, $W^{(2)} \in \mathbb{R}^{N_{\text{users}}\times k}$ and $W^{(1)} \in \mathbb{R}^{k\times N_{\text{users}}}$. $g$ and $h$ are still sigmoid functions. \\
 
-This change was motivated by the fact that we now have a higher number of data points, each with a lower number of features. We believe this could lead to a more accurate autoencoder, as there are less patterns to learn and more training data, which could theoretically strengthen the abilities of the network. We still tested out the rest of our modifications on both users and questions as entities. Proceeding, we use $N_{\text{input}}$ to abstractly represent $N_{\text{users}}$ and $N_{\text{questions}}$
+\noindent This change was motivated by the fact that we now have a higher number of data points, each with a lower number of features. We believe this could lead to a more accurate autoencoder, as there are less patterns to learn and more training data, which could theoretically strengthen the abilities of the network. We still tested out the rest of our modifications on both users and questions as entities. Proceeding, we use $N_{\text{input}}$ to abstractly represent $N_{\text{users}}$ and $N_{\text{questions}}$
 \subsubsection{Additional Layers}
 We have added additional layers in both the encoding and decoding process of the collaborative filtering. We have given these extra hidden layers a size of $2k$ after doing some testing, where $k$ is the size of our latent dimension. Let $\sigma$ denote the sigmoid function. This modification gives a new forward pass equation of,
 $$L(x) = \sigma(H^{(1)}(\sigma(W^{(1)}x + b^{(1)}) + a^{(1)}) \in \mathbb{R}^{k}$$
 $$f(x; \theta) = \sigma(W^{(2)}\sigma(H^{(2)}L(x) + a^{(2)}) + b^{(2)}) \in \mathbb{R}^N$$
 
-Where $x$ is our input, either $\in \mathbb{R}^{N_{\text{users}}}$ or $\in \mathbb{R}^{N_{\text{questions}}}$, $N = |x|$, and $k$ is the size of the latent dimension. $W^{(2)} \in \mathbb{R}^{N_{\text{input}}\times 2k}$, $W^{(1)} \in \mathbb{R}^{2k\times N_{\text{input}}}$, $H^{(2)} \in \mathbb{R}^{2k\times k}$ and $H^{(2)} \in \mathbb{R}^{k\times 2k}$.
+\noindent Where $x$ is our input, either $\in \mathbb{R}^{N_{\text{users}}}$ or $\in \mathbb{R}^{N_{\text{questions}}}$, $N = |x|$, and $k$ is the size of the latent dimension. $W^{(2)} \in \mathbb{R}^{N_{\text{input}}\times 2k}$, $W^{(1)} \in \mathbb{R}^{2k\times N_{\text{input}}}$, $H^{(2)} \in \mathbb{R}^{2k\times k}$ and $H^{(2)} \in \mathbb{R}^{k\times 2k}$.\\
 
-Deepening the network takes the same motivation as switching to question as entity; trying to improve the optimization. Adding layers in a neural network can improve performance because deeper neural networks can learn more complex, non-linear functions.
+\noindent Deepening the network takes the same motivation as switching to question as entity; trying to improve the optimization. Adding layers in a neural network can improve performance because deeper neural networks can learn more complex, non-linear functions.
 \subsubsection{Dropout}
 
 Dropout is a regularization technique in neural networks aimed at preventing overfitting during training. It works by randomly removing neurons with a certain probability in each training iteration, forcing the network to learn more robust features independently and reducing dependency among neurons. This process effectively creates multiple sub-networks during training, leading to an ensemble effect that improves generalization. During evaluation, dropout is typically turned off, but the weights of connections are scaled to maintain consistency. This scaling is necessary because on a certain percentage of weights will be involved in each iteration of training, and thus will end up being much larger to account for the overall lack of latent input.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{dropout.png}
+    \includegraphics[width=0.5\linewidth]{figures/dropout.png}
     \caption{Dropout — Srivastava et al. (2014)}
     \label{fig:enter-label}
 \end{figure}
 
-Figure 1 is what dropout looks like visually for a basic multilayer perceptron. We applied dropout to our autoencoder in each layer, in hopes to reduce overfitting and improve generalization.
+\noindent Figure 1 is what dropout looks like visually for a basic multilayer perceptron. We applied dropout to our autoencoder in each layer, in hopes to reduce overfitting and improve generalization.
 \subsubsection{Dense Re-feeding}
 One difficulty in training an autoencoder to perform collaborative filtering is the fact that training data is inherently sparse; Some data points will be missing values for certain features. However, we can take advantage of the fact that autoencoders output a vector of the same shape as the input, and use that output vector as a training data point of its own. As the model becomes more accurate these output vectors offer new opportunities for the model to consolidate its weights given vectors it has never seen before. 
 \subsubsection{Meta-data Injection}
@@ -229,10 +256,14 @@ Note, each row of this table represents the performance of the modifications sta
 
 Because our model is made up of many small modifications, the analyisis of performance can be broken down into smaller parts. Addition of just \underline{metadata} was not beneficial as it likely just enhanced the model's overfitting tendencies. Additionally, the metadata available for user as entities is quite minimal, with gender and age likely being mostly irrelevant to quiz performance. \underline{Theta injection} on its own did however make an improvement form the baseline. This is likely because we had no additional network being trained on the metadata itself, and it is only a single value. The model saw a major improvement when switching to a \underline{qsuestion as entity} formulation, largely due to optimization enhancements.
 \\
-Bringing metadata and beta injection in to play with question as entity also brought about performance improvements. The beta injection improvement was about the same as the theta injection's improvement on the baseline model. As well, the question meta data was far more nuanced and thus allowed for more complex patterns to be learned, thus enhancing optimization capabilities. The next modification to make was \underline{adding more layers} to our neural net. By itself, this change actually hindered the models accuracy by a few hundredths of a percent, largely due to over fitting, although more layers allows for a model to learn more complex functions, without sufficient regularization techniques, the model will align itself almost completely to the training data.
+
+\noindent Bringing metadata and beta injection in to play with question as entity also brought about performance improvements. The beta injection improvement was about the same as the theta injection's improvement on the baseline model. As well, the question meta data was far more nuanced and thus allowed for more complex patterns to be learned, thus enhancing optimization capabilities. The next modification to make was \underline{adding more layers} to our neural net. By itself, this change actually hindered the models accuracy by a few hundredths of a percent, largely due to over fitting, although more layers allows for a model to learn more complex functions, without sufficient regularization techniques, the model will align itself almost completely to the training data.
 \\
-Until this point, all our models had suffered from overfitting, which can be seen by the fact that their peak performance occured at very early epochs (they quickly drop off in accuracy due to overfitting). However, after adding \underline{dropout} to our deeper, question as entity model, we saw a major improvement in performance. This was due to the regularizing effects of dropout, and its ability to dismantle co-dependence within the network. 
-\\From this point, our model's performance only increased slightly when adding dense re-feeding/meta injection and even decreased when all modifications were combined. We believe this came from complications with overfitting, due to have both the beta value and metadata injected, thus increase the size of our latent dimension significantly. I believe for these additional modifications to make a significant positive change to the performance, they would need to be added alongside other regularization techniques.
+
+\noindent Until this point, all our models had suffered from overfitting, which can be seen by the fact that their peak performance occured at very early epochs (they quickly drop off in accuracy due to overfitting). However, after adding \underline{dropout} to our deeper, question as entity model, we saw a major improvement in performance. This was due to the regularizing effects of dropout, and its ability to dismantle co-dependence within the network. 
+\\
+
+\noindent From this point, our model's performance only increased slightly when adding dense re-feeding/meta injection and even decreased when all modifications were combined. We believe this came from complications with overfitting, due to have both the beta value and metadata injected, thus increase the size of our latent dimension significantly. I believe for these additional modifications to make a significant positive change to the performance, they would need to be added alongside other regularization techniques.
 
 
 
@@ -244,6 +275,6 @@ One significant limitation of our proposed model lies in the hardware access. Si
 \noindent These limitations mark areas where further improvements and optimizations could be made to enhance the performance and efficacy of our model. One possible modification we can make to improve on this is to select alternative techniques in addition to our model. These techniques should have better, if not optimal, performance with shallower networks. 
 
 \section{References}
-N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, R. Salakhutdinov, “Dropout: A Simple Way to Prevent Neural Networks from Overfitting” (2014)
+    N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, R. Salakhutdinov, “Dropout: A Simple Way to Prevent Neural Networks from Overfitting” (2014)
 
 \end{document}
