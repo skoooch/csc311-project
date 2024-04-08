@@ -1,0 +1,7 @@
+n_question: 0.6954558283940163 (over fits extremely quickly)
+nn_dropout: 0.6940445 (over fits extremely quickly as well)
+nn_deep: 0.693480101 epoch 16
+nn_deep+dropout: 0.7132373 epoch 92
+deep dropout dense meta: .7142 epoch 100
+beta inject: 0.7080 epcoch 3
+all: 0.7077 epocj 300
