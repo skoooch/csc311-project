@@ -106,7 +106,43 @@ The final autoencoder we came up with incorporates all the modifications listed 
     \label{fig:enter-label}
 \end{figure}
 \newpage
-
+\subsection{Model vs Baseline Models}
+\begin{table}[htbp!]
+\centering
+\begin{tabular}{|m{5cm}|c|c|c|}
+\hline
+Model & Val. Accuracy & Test Accuracy & Hyperparameters \\
+\hline
+Part A Autoencoder & 0.6841 & 0.6852 & \\
+\hline
+Metadata & 0.6793 & 0.6815 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+Beta Injection & 0.6946 & 0.6943 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+Question as Entity & 0.69545 & 0.69432 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+Question + Beta injection & 0.7080 & 0.6973 & k = 50, Epoch = 3, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+Question + Metadata& 0.69602 & 0.6955 & k = 50, Epoch = 3, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+Question + Dropout & 0.6940 & 0.6901 & k = 50, Epoch = 5, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+Question + Deeper & 0.6934 & 0.6950 & k = 25, Epoch = 15, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+Question + Deeper + Dropout & 0.7132 & 0.7092 & k = 25, Epoch = 100, LR = 0.1 $\lambda$ = 0.001\\
+\hline
+ Question + Deeper + Dropout + Refeeding& 0.7116 & 0.7101 & k = 25, Epoch = 50, LR = 0.1 $\lambda$ = 0.001\\
+ \hline
+Question + Deeper + Dropout + Refeeding + Metadata& 0.7142 & 0.7151 & k = 25, Epoch = 100, LR = 0.1 $\lambda$ = 0.001\\
+ \hline
+Question + Deeper + Dropout + Refeeding + Metadata + Beta Injection & 0.7077 & 0.7061 & k = 25, Epoch = 300, LR = 0.1 $\lambda$ = 0.001\\
+ \hline
+\end{tabular}
+\end{table}
+Note, each row of this table represents the performance of the modifications stated in the "Model" column. Each modification is has been added onto the baseline model from Part A, Q3.\\
+\subsection{Model Performance}
+Because our model is made up of many small modifications, the final performance can be broken down into smaller parts. We can modifications like 
+\subsection{Model Limitation}
 N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, R. Salakhutdinov, “Dropout: A Simple Way to Prevent Neural Networks from Overfitting” (2014)
 
 \end{document}
