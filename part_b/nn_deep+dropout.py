@@ -45,7 +45,7 @@ def load_data(base_path="../project/data", question = False):
 
 
 class AutoEncoder(nn.Module):
-    def __init__(self, num_input, g = 50, h = 50, bottleNeck = 25, question=False):
+    def __init__(self, num_input, g = 100, h = 100, bottleNeck = 50, question=False):
         """ Initialize a class AutoEncoder.
 
         :param num_question: int
@@ -82,8 +82,8 @@ class AutoEncoder(nn.Module):
         # Implement the function as described in the docstring.             #
         # Use sigmoid activations for f and g.                              #
         #####################################################################
-        encode = self.dp(sigmoid(self.g_two(sigmoid(self.g(inputs)))))
-        decode = sigmoid(self.h(sigmoid(self.h_two(encode))))
+        encode = self.dp(sigmoid(self.g_two(self.dp(sigmoid(self.g(inputs))))))
+        decode = sigmoid(self.h(self.dp(sigmoid(self.h_two(encode)))))
         #####################################################################
         #                       END OF YOUR CODE                            #
         #####################################################################

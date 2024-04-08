@@ -111,11 +111,9 @@ def irt(data, val_data, lr, iterations):
     for i in range(iterations):
         neg_lld = neg_log_likelihood(data, theta=theta, beta=beta)
         val_neg_lld = neg_log_likelihood(val_data, theta=theta, beta=beta)
-        score = evaluate(data=val_data, theta=theta, beta=beta)
         likelihoods.append(neg_lld)
         val_likelihoods.append(val_neg_lld)
-        val_acc_lst.append(score)
-        print("NLLK: {} \t Score: {}".format(neg_lld, score))
+        #print("NLLK: {} \t Score: {}".format(neg_lld, score))
         theta, beta = update_theta_beta(data, lr, theta, beta)
 
     # TODO: You may change the return values to achieve what you want.
@@ -141,114 +139,9 @@ def evaluate(data, theta, beta):
            / len(data["is_correct"])
 
 
-
-def main():
+def get_thetas():
     train_data = load_train_csv("data")
     # You may optionally use the sparse matrix.
-    sparse_matrix = load_train_sparse("data")
     val_data = load_valid_csv("data")
-    test_data = load_public_test_csv("data")
-    #print(np.unique(train_data["is_correct"]))
-    #print(np.unique(train_data["user_id"]))
-    #print(np.unique(train_data["question_id"]))
-    #print(sparse_matrix)
-    
-    print([train_data["question_id"][0]])
-    print([train_data["question_id"][1]])
-    print([train_data["question_id"][2]])
-
-    #####################################################################
-    # TODO:                                                             #
-    # Tune learning rate and number of iterations. With the implemented #
-    # code, report the validation and test accuracy.                    #
-    #####################################################################
-    training_ll = []
-    val_ll = []
-    val_accs = []
-    lrs = [0.1, 0.001, 0.0001, 0.00001]
-    iters = [100, 200, 500, 1000, 1500, 2000]
-    #lrs = [0.01] FOR TESTING
-    #iters = [20] FOR TESTING
-    tuples = []
-    thetas = []
-    betas = []
-    for l in lrs:
-        for iter in iters:
-            result = irt(train_data, val_data, l, iter)
-            val_accs.append(result[2][-1])
-            training_ll.append(result[3])
-            val_ll.append(result[4])
-            print(training_ll)
-            print(val_ll)
-            tuples.append((l, iter))
-            thetas.append(result[0])
-            betas.append(result[1])
-
-    # model with highest accuracy
-    best_index = val_accs.index(max(val_accs))
-
-
-    iterations = range(0, len(val_ll[best_index]))
-    plt.figure(figsize=(10, 6))
-    plt.plot(iterations, training_ll[best_index], label='Training Log Likelihood')
-    plt.plot(iterations, val_ll[best_index], label='Validation Log Likelihood')
-    plt.xlabel('Iteration')
-    plt.ylabel('Log Likelihood')
-    plt.title('Training and Validation Log Likelihoods vs. Iteration')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-    print("learning rate and iterations", tuples[best_index])
-    print("best validation acc", val_accs[best_index])
-    print("test acc", evaluate(test_data, thetas[best_index], betas[best_index]))
-    # best result is 0.0001 LR, 1500 iterations.
-    #####################################################################
-    #                       END OF YOUR CODE                            #
-    #####################################################################
-
-    #####################################################################
-    # TODO:                                                             #
-    # Implement part (d)                                                #
-    #####################################################################
-    score_one = []
-    score_two = []
-    score_three = []
-    for i in range(len(thetas[best_index])):
-        jone = {"user_id":np.array([i]), "question_id": np.array([train_data["question_id"][0]]), "is_correct": np.array([1])}
-        jtwo = {"user_id":np.array([i]), "question_id": np.array([train_data["question_id"][1]]), "is_correct": np.array([1])}
-        jthree = {"user_id":np.array([i]), "question_id": np.array([train_data["question_id"][2]]), "is_correct": np.array([1])}
-        score_one.append(sigmoid(thetas[best_index][i] - betas[best_index][train_data["question_id"][0]]))
-        score_two.append(sigmoid(thetas[best_index][i] - betas[best_index][train_data["question_id"][1]]))
-        score_three.append(sigmoid(thetas[best_index][i] - betas[best_index][train_data["question_id"][2]]))
-    
-    # line plot
-    print(score_one, score_two, score_three) 
-    plt.figure(figsize=(10, 6))
-    plt.plot(thetas[best_index], score_one, label='Question j1')
-    plt.plot(thetas[best_index], score_two, label='Question j2')
-    plt.plot(thetas[best_index], score_three, label='Question j3')
-    plt.xlabel('Ability (Theta)')
-    plt.ylabel('Probability of Correct Response')
-    plt.title('Probability of Correct Response vs. Ability for Different Questions')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-
-    # scatter plot
-    plt.figure(figsize=(10, 6))
-    plt.scatter(thetas[best_index], score_one, label='Question j1', marker='o', s=100)
-    plt.scatter(thetas[best_index], score_two, label='Question j2', marker='s', s=100)
-    plt.scatter(thetas[best_index], score_three, label='Question j3', marker='^', s=100)
-    plt.xlabel('Ability (Theta)')
-    plt.ylabel('Probability of Correct Response')
-    plt.title('Probability of Correct Response vs. Ability for Different Questions')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
-    #####################################################################
-    #                       END OF YOUR CODE                            #
-    #####################################################################
-
-
-if __name__ == "__main__":
-    main()
+    result = irt(train_data, val_data, 0.0005, 1000)
+    return (result[0], result[1])

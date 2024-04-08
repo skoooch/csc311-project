@@ -83,8 +83,8 @@ class AutoEncoder(nn.Module):
         # Implement the function as described in the docstring.             #
         # Use sigmoid activations for f and g.                              #
         #####################################################################
-        encode = self.dp(sigmoid(self.g_two(sigmoid(self.g(inputs)))))
-        decode = sigmoid(self.h(sigmoid(self.h_two(encode))))
+        encode = self.dp(sigmoid(self.g_two(self.dp((sigmoid(self.g(inputs)))))))
+        decode = sigmoid(self.h(self.dp(sigmoid(self.h_two(encode)))))
         #####################################################################
         #                       END OF YOUR CODE                            #
         #####################################################################
@@ -182,7 +182,7 @@ def main():
     question = True
     zero_train_matrix, train_matrix, valid_data, test_data = load_data(question=question)
     model = AutoEncoder(train_matrix.shape[1], question=question)
-    train(model, 0.1, 0.001,  train_matrix,  zero_train_matrix, valid_data, 100, question=question)
+    train(model, 0.1, 0.001,  train_matrix,  zero_train_matrix, valid_data, 200, question=question)
 
     #####################################################################
     #                       END OF YOUR CODE                            #

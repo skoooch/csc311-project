@@ -164,7 +164,7 @@ def evaluate(model, train_data, valid_data, question=False):
 
 
 def main():
-    question = False
+    question = True
     zero_train_matrix, train_matrix, valid_data, test_data = load_data(question=question)
     model = AutoEncoder(train_matrix.shape[1], question=question)
     train(model, 0.1, 0.001,  train_matrix,  zero_train_matrix, valid_data, 100, question=question)

@@ -5,7 +5,7 @@ from sympy import true
 from utils import *
 import numpy as np
 import torch
-from IRT_injection import get_thetas
+
 import matplotlib.pyplot as plt
 from torch import sigmoid
 from torch import relu
@@ -66,7 +66,7 @@ class AutoEncoder(nn.Module):
         self.dp = nn.Dropout(0.8)
         self.g = nn.Linear(num_input, g)
         self.g_two = nn.Linear(g, bottleneck)
-        self.h_two = nn.Linear(meta_bottleneck + bottleneck + 1, h)
+        self.h_two = nn.Linear(meta_bottleneck + bottleneck, h)
         self.h = nn.Linear(h, num_input)
         
 
@@ -82,7 +82,7 @@ class AutoEncoder(nn.Module):
         meta_norm = torch.norm(self.meta.weight, 2) ** 2
         return g_w_norm + h_w_norm + meta_norm + g_2_w_norm + h_2_w_norm
 
-    def forward(self, inputs, meta, beta):
+    def forward(self, inputs, meta):
         """ Return a forward pass given inputs.
 
         :param inputs: user vector.
@@ -93,17 +93,16 @@ class AutoEncoder(nn.Module):
         # Implement the function as described in the docstring.             #
         # Use sigmoid activations for f and g.                              #
         #####################################################################
-        encode_students = self.dp(sigmoid(self.g_two(self.dp(sigmoid(self.g(inputs))))))
-        encode_meta = (sigmoid(self.meta(meta)))
-        betas = torch.FloatTensor([beta]).unsqueeze(0)
-        encode = torch.cat((encode_students, encode_meta, betas), dim=1)
-        decode = sigmoid(self.h(self.dp(sigmoid(self.h_two(self.dp(encode))))))
+        encode_students = sigmoid(self.g_two(self.dp(sigmoid(self.g(inputs)))))
+        encode_meta = sigmoid(self.meta(meta))
+        encode = self.dp(torch.cat((encode_students, encode_meta), dim=1))
+        decode = sigmoid(self.h(self.dp(sigmoid(self.h_two(encode)))))
         #####################################################################
         #                       END OF YOUR CODE                            #
         #####################################################################
         return decode
 
-def train(model, lr, lamb, beta, question_meta, train_data, zero_train_data, valid_data, num_epoch, question=False):
+def train(model, lr, lamb, question_meta, train_data, zero_train_data, valid_data, num_epoch, question=False):
     """ Train the neural network, where the objective also includes
     a regularizer.
 
@@ -133,7 +132,7 @@ def train(model, lr, lamb, beta, question_meta, train_data, zero_train_data, val
             meta = question_meta[question_id].unsqueeze(0)
             target = inputs.clone()
             optimizer.zero_grad()
-            output = model(inputs, meta, beta[question_id])
+            output = model(inputs, meta)
             # print("\nout\n")
             # print(output)
 
@@ -149,11 +148,11 @@ def train(model, lr, lamb, beta, question_meta, train_data, zero_train_data, val
             # optimizer.zero_grad()
             # target = output.clone()
             # #perform a dense refeeding step
-            # output = model(output, meta, beta[question_id])
+            # output = model(output, meta)
             # loss = torch.sum((output - target) ** 2) + model.get_weight_norm()*lamb*0.5
             # train_loss += loss.item()
             # optimizer.step()
-        valid_acc = evaluate(model,beta, zero_train_data, valid_data, question_meta, question=question)
+        valid_acc = evaluate(model, zero_train_data, valid_data, question_meta, question=question)
         print("Epoch: {} \tTraining Cost: {:.6f}\t "
               "Valid Acc: {}".format(epoch, train_loss, valid_acc))
     plt.plot(epoch_array, train_array)
@@ -166,7 +165,7 @@ def train(model, lr, lamb, beta, question_meta, train_data, zero_train_data, val
     #####################################################################
 
 
-def evaluate(model, beta, train_data, valid_data, full_meta, question=False):
+def evaluate(model, train_data, valid_data, full_meta, question=False):
     """ Evaluate the valid_data on the current model.
 
     :param model: Module
@@ -183,7 +182,7 @@ def evaluate(model, beta, train_data, valid_data, full_meta, question=False):
     for i, u in enumerate(valid_data["question_id"]):
         inputs = Variable(train_data[u]).unsqueeze(0)
         meta = full_meta[u].unsqueeze(0)
-        output = model(inputs, meta,beta[u])
+        output = model(inputs, meta)
 
         guess = output[0][valid_data["user_id"][i]].item() >= 0.5
         if guess == valid_data["is_correct"][i]:
@@ -195,14 +194,9 @@ def evaluate(model, beta, train_data, valid_data, full_meta, question=False):
 def main():
     question = True
     zero_train_matrix, train_matrix, valid_data, test_data, meta = load_data(base_path="../project/data", question=question)
-    thetas, betas = get_thetas()
-    eta = None
-    if question:
-        eta = betas
-    else:
-        eta = thetas
+
     model = AutoEncoder(train_matrix.shape[1], question=question)
-    train(model, 0.1, 0.001, eta,  meta, train_matrix,  zero_train_matrix, valid_data, 300, question=question)
+    train(model, 0.1, 0.001,  meta, train_matrix,  zero_train_matrix, valid_data, 300, question=question)
 
     #####################################################################
     #                       END OF YOUR CODE                            #
