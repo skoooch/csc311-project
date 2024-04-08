@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
+\usepackage{array} % required for text wrapping in tables
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{float}
@@ -95,13 +96,13 @@ The final autoencoder we came up with incorporates all the modifications listed 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1
-\linewidth]{model.png}
+\linewidth]{figures/model.png}
 \caption{Diagram of Model during Evaluation/Inference}
 \label{fig:enter-label}
 \end{figure}
 
 \begin{figure}[H]
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{model during training.png}
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{figures/model during training.png}
     \caption{Diagram of Model during Training}
     \label{fig:enter-label}
 \end{figure}
@@ -142,7 +143,16 @@ Question + Deeper + Dropout + Refeeding + Metadata + Beta Injection & 0.7077 & 0
 Note, each row of this table represents the performance of the modifications stated in the "Model" column. Each modification is has been added onto the baseline model from Part A, Q3.\\
 \subsection{Model Performance}
 Because our model is made up of many small modifications, the final performance can be broken down into smaller parts. We can modifications like 
+
+
 \subsection{Model Limitation}
+One significant limitation of our proposed model lies in the hardware access. Since the only accessible machines to us are our laptops, the restriction in computation power arises naturally, making it hard for us to implement a network with more than two hidden layers. This constraint hinders our ability to develop deeper architectures and potentially deprives the model's capacity to represent data in scenarios where complicated patterns exist (such as language processing or image recognition).\\
+
+\noindent One other limitation exists due to the ineffectiveness of the dense re-feeding technique. Despite its theoretical potential to enhance the model's learning by leveraging output vectors as additional training data points, the validity of this approach was not as evident as expected due to the model's inability to achieve higher accuracy. With the model's performance plateauing at approximately 70\% accuracy, a substantial proportion (30\%) of results remains to be inaccurate predictions. Consequently, these inaccurate predictions could potentially mislead the gradient descent updates during training, diminishing the efficacy of the dense re-feeding strategy.\\
+
+\noindent These limitations mark areas where further improvements and optimizations could be made to enhance the performance and efficacy of our model. One possible modification we can make to improve on this is to select alternative techniques in addition to our model. These techniques should have better, if not optimal, performance with shallower networks. 
+
+\section{References}
 N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, R. Salakhutdinov, “Dropout: A Simple Way to Prevent Neural Networks from Overfitting” (2014)
 
 \end{document}
