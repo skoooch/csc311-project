@@ -1,1 +1,1 @@
-MAKE SURE YOU ADD FIGURES USED IN REPORT TO THE FIGURES FOLDER WITH THE SAME NAME
+For the analysis of the modified autoencoder model, see part B of the project report.
